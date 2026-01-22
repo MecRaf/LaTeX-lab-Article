@@ -1,0 +1,380 @@
+\documentclass[12pt, a4paper]{MiArticulo}
+
+\usepackage{listings}
+\lstset{
+	numbers=left,
+	numbersep=8pt,
+	numberstyle=\tiny\it,
+	frame=single,
+	basicstyle=\tt\footnotesize,
+	breaklines=true,
+	aboveskip=1.2\baselineskip,
+	tabsize=3
+}
+
+\usepackage{tikz, pgfplots, pgfplotstable}
+\usetikzlibrary{arrows.meta, intersections}
+\pgfplotsset{compat=1.18}
+
+\usepackage{siunitx}
+\sisetup{
+	output-decimal-marker={,},
+	inter-unit-product=\ensuremath{\cdot},
+	detect-mode = true,
+	detect-all
+}
+\DeclareSIUnit{\degree}{\textdegree}
+
+\usepackage{transparent}
+\usepackage{eso-pic}
+\newcommand{\BackgroundPic}{
+	\put(-4,0){
+		\parbox[b][\paperheight]{\paperwidth}{
+			\vfill
+			\centering
+			\transparent{0.05}
+			\includegraphics[
+			width=\paperwidth,height=\paperheight,keepaspectratio
+			]{Logo USB.png}
+			\vfill
+		}
+	}
+}
+%\AddToShipoutPicture{\BackgroundPic}
+%\ClearShipoutPicture
+
+\title{Banco de Pruebas de Amortiguadores y Vibraciones Libres}
+\author{Rafael Alexander Henriquez Medina}
+\date{\today}
+
+\begin{document}
+\AddToShipoutPicture{\BackgroundPic}
+\maketitle
+
+\onehalfspacing
+\section{Procedimiento}
+\subsection{Parte A}
+En la primera parte de la práctica se calculó la presión mínima a extensión y compresión de un amortiguador telescópico, posteriormente utilizando un cronómetro se determinó el tiempo que tardaba en comprimirse y extenderse para 6 presiones diferentes.
+
+Una vez obtenidos estos tiempos y la distancia, se obtuvo los valores de velocidad y conocido los diámetros del eje y del pistón del cilindro neumático, para cada presión se hallaron las fuerzas, considerando que las negativas son las que se realizaron en la
+compresión del amortiguador.
+
+Con la fuerza y la velocidad se construyó el gráfico de la curva característica del amortiguador y por medio de un ajuste lineal se obtuvieron las constantes de compresión y extensión del resorte dadas por la pendiente de las rectas.
+
+Para calcular estas fuerzas se usaron las siguientes ecuaciones:
+\begin{align}
+	F_c&=-(P_{atm}+P_{man})\cdot A_{sup}+P_{atm}\cdot A_{inf}+F_{cmin} \\
+	F_{cmin}&=(P_{atm}+P_{cmin})\cdot A_{sup}-P_{atm}\cdot A_{inf} \\
+	F_e&=(P_{atm}+P_{man})\cdot A_{inf}-P_{atm}\cdot A_{sup}-F_{emin} \\
+	F_{emin}&=(P_{atm}+P_{emin})\cdot A_{inf}-P_{atm}\cdot A_{sup} \\
+	C_a&=\frac{|C_c|+|C_e|}{2} \\
+	R_{ce}&=\left|\frac{C_c}{C_e}\right|
+\end{align} donde:\\
+$F_c$: Fuerza del Pistón a Compresión.\\
+$F_{cmin}$: Fuerza de la Cámara de Aire a Compresión.\\
+$P_{cmin}$: Presión Mínima de Compresión.\\
+$A_{sup}$: Área Superior del Cilindro Neumático.\\
+$P_{atm}$: Presión Atmosférica.\\
+$F_e$: Fuerza del Pistón a Extensión.\\
+$F_{emin}$: Fuerza de la Cámara de Aire a Extensión.\\
+$P_{emin}$: Presión Mínima de Extensión.\\
+$A_{inf}$: Área Inferior del Cilindro Neumático.\\
+$P_{man}$: Presión Manométrica.\\
+$C_a$: Coeficiente de Amortiguación Promedio.\\
+$C_c$: Coeficiente de Amortiguación a Compresión.\\
+$C_e$: Coeficiente de Amortiguación a Extensión.\\
+$R_{ce}$: Relación de Compresión/Extensión.
+
+\subsection{Parte B: Vibración Libre}
+\subsubsection{Parte B.1: Determinación de la Frecuencia Natural y Momento de Inercia del Péndulo}
+Se dejó oscilar una barra de acero de sección rectangular de \qtyproduct{1 x 0.5}{in} y de longitud de \SI{1}{\meter}, en posición vertical articulada en uno de sus extremos que se comporta como un péndulo simple. Usando un sensor óptico, un osciloscopio y una tarjeta de adquisición de datos, se registraron los instantes que la barra pasa por la posición de equilibrio.
+
+Con estos datos se construye el gráfico que describe el movimiento de la barra, se obtuvo la frecuencia natural del espectro de frecuencias (el primer pico de la gráfica), y para los cálculos teóricos, se determinó, la ecuación que rige el movimiento del sistema, la cual se linealiza para ángulos pequeños usando que ($\sin(\theta)\approx\theta$ y $\cos(\theta)\approx1$), siendo:
+\begin{equation}
+	I_{zz}\ddot{\theta}+\frac{M_BgL}{2}\theta=0
+\end{equation}
+
+Siendo la inercia de la barra:
+\begin{equation}
+	I_{zz}=\frac{1}{3}M_BL^2
+\end{equation}
+
+Usando la ecuación~\ref{eq:freqnat} se calculó la frecuencia natural teórica. Finalmente, se comparó la señal en el tiempo, tanto teórica como experimentalmente, la cual simula la respuesta del sistema.
+\begin{equation} \label{eq:freqnat}
+	\omega_N^2=\frac{MgL}{2I_{zz}}
+\end{equation}
+
+\subsubsection{Parte B.2: Vibración Libre con Poca Amortiguación}
+Se utilizó un sistema de masa-resorte-amortiguador, en el cual se excitó una barra de acero de sección rectangular bajo un conjunto de condiciones iniciales.
+
+El sistema está compuesto de varias masas, un amortiguador viscoso, un resorte y un vibrómetro, conectando el osciloscopio se registró la señal y por medio de un programa de computadora (LABVIEW), se registró la respuesta libre y el espectro de frecuencia del sistema. A partir de los datos de la señal en el tiempo y el espectro de frecuencia, se obtiene la frecuencia natural amortiguada y repitiendo la parte B.1, se calcula el valor de la inercia del sistema experimental.
+
+Para el cálculo de la ecuación diferencial se tomó en cuenta el vibrómetro, los soportes, el bloque con masas puntuales, el tornillo, 1/3 de la masa del resorte y la barra.
+
+Por otro lado, con una data proveniente de un ensayo dinámico de respuesta libre, donde se dejó oscilar un resorte con un vibrómetro y una masa se halla la constante de rigidez del resorte. Reportando estos datos en una gráfica se obtiene el decremento logarítmico ($\Delta$) y despejando se obtiene la constante de amortiguación usando las siguientes ecuaciones:
+\begin{align}
+	\Delta&=\ln\left(\frac{X_n}{X_{n+1}}\right)\\
+	\omega_a&=\omega_N\sqrt{1-\zeta^2}\\
+	\zeta&=\frac{\Delta}{\sqrt{(2\pi n)^2+\Delta^2}}=\frac{C_{eq}}{2\sqrt{K_{eq}M_{eq}}}
+\end{align}
+
+\section{Datos Tomados}
+\subsection{Parte A: Curva Característica del Amortiguador}
+\begin{center}
+	\begin{tabular}{c c c c} \hline
+		\textbf{N° Med.} & \textbf{Presión [psi]} & \textbf{Tiempo Compresión [s]} & \textbf{Tiempo Extensión [s]} \\ \hline
+		1 & 10 & 1,027 & 1,147 \\
+		2 & 20 & 0,553 & 0,450 \\
+		3 & 30 & 0,410 & 0,310 \\
+		4 & 40 & 0,340 & 0,250 \\
+		5 & 50 & 0,310 & 0,210 \\
+		6 & 60 & 0,270 & 0,197 \\ \hline
+		$P_{min}$ Ext. & 5 & & \\
+		$P_{min}$ Comp. & 2,5 & & \\ \hline
+	\end{tabular}
+\end{center}
+Sabiendo que:\\
+$P_{atm}=\SI{101.3}{\kilo\pascal}$\\
+$d=\SI{50.6}{\milli\meter}$\\
+$\oslash_{pn}=\SI{38.8}{\milli\meter}$\\
+$\oslash_{en}=\SI{15.9}{\milli\meter}$
+
+\subsection{Parte B: Vibración Libre}
+\subsubsection{Parte B.1: Determinación de la Frecuencia Natural y Momento de Inercia del Péndulo}
+\noindent
+\begin{tabular}{|c|c|} \hline
+	Frecuencia del Primer Pico en el Espectro de Frecuencia [\unit{\hertz}] & 1,25 \\ \hline
+\end{tabular}
+
+\begin{center}
+	\begin{tabular}{|c|c|} \hline
+		\multicolumn{2}{|c|}{\textbf{Señal en el Tiempo y Espectro de Frecuencias}} \\ \hline
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=7.45cm,
+				title={\textbf{Amplitud vs Tiempo 1}},
+				xlabel={Tiempo [\unit{\second}]},
+				ylabel={Amplitud [\unit{\volt}]},
+				xmin=0, xmax=3,
+				ymin=-1, ymax=4,
+				grid=major
+				]
+				\addplot [blue] table {AmpvsTiempo1.dat};
+			\end{axis}
+		\end{tikzpicture} &
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=7.45cm,
+				title={\textbf{Espectro de Frecuencias 1}},
+				xlabel={Frecuencia [\unit{\hertz}]},
+				ylabel={Magnitud [\unit{\volt}]},
+				xmin=0, xmax=8,
+				ymin=0, ymax=1,
+				grid=major
+				]
+				\addplot [blue, smooth] table {MagnitudFF1.dat};
+			\end{axis}
+		\end{tikzpicture}\\ \hline
+	\end{tabular}
+\end{center}
+
+\subsubsection{Parte B.2: Vibración Libre con Poca Amortiguación}
+\begin{center}
+	\begin{tabular}{|c|c|c|} \hline
+		\multicolumn{3}{|c|}{\textbf{Longitudes del Banco [mm]}} \\ \hline
+		\multirow{12}{13cm}{\centering\includegraphics[width=12cm]{LongBanco.pdf}} & \multirow{2}{*}{$L_{bc}$} & \multirow{2}{*}{750} \\ & & \\ \cline{2-3}
+		& \multirow{2}{*}{$L_{res}$} & \multirow{2}{*}{660} \\ & & \\ \cline{2-3}
+		& \multirow{2}{*}{$L_{sop}$} & \multirow{2}{*}{445} \\ & & \\ \cline{2-3}
+		& \multirow{2}{*}{$L_{amo}$} & \multirow{2}{*}{178} \\ & & \\ \cline{2-3}
+		& \multirow{2}{*}{$L_{vib}$} & \multirow{2}{*}{320} \\ & & \\ \cline{2-3}
+		& \multirow{2}{*}{$L_{Blq}$} & \multirow{2}{*}{190} \\ & & \\ \hline
+	\end{tabular}
+\end{center}
+
+\noindent
+\begin{tabular}{|c|c|} \hline
+	Frecuencia del Pico en el Espectro de Frecuencia [\unit{\hertz}] & 6,00 \\ \hline
+\end{tabular}
+\begin{center}
+	\begin{tabular}{|c|c|} \hline
+		\multicolumn{2}{|c|}{\textbf{Señal en el Tiempo y Espectro de Frecuencias}} \\ \hline
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=7.18cm,
+				title={\textbf{Amplitud vs Tiempo 2}},
+				xlabel={Tiempo [\unit{\second}]},
+				ylabel={Amplitud [\unit{\volt}]},
+				xmin=0, xmax=5,
+				ymin=-2, ymax=2,
+				grid=major
+				]
+				\addplot [blue] table {AmpvsTiempo2.dat};
+			\end{axis}
+		\end{tikzpicture} &
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=7.18cm,
+				title={\textbf{Espectro de Frecuencias 2}},
+				xlabel={Frecuencia [\unit{\hertz}]},
+				ylabel={Magnitud [\unit{\volt}]},
+				xmin=0, xmax=12,
+				yticklabel style={/pgf/number format/.cd,fixed,precision=2},
+				ymin=0, ymax=0.1,
+				grid=major
+				]
+				\addplot [blue, smooth] table {MagnitudFF2.dat};
+			\end{axis}
+		\end{tikzpicture}\\ \hline
+	\end{tabular}
+\end{center}
+
+\section{Resultados}
+\subsection{Parte A: Curva Característica del Amortiguador}
+\begin{center}
+	\begin{tabular}{|c c|c c|} \hline
+		\multicolumn{2}{|c|}{\textbf{Compresión}} & \multicolumn{2}{c|}{\textbf{Extensión}} \\ \hline
+		\textbf{Fuerza [N]} & \textbf{Velocidad [m/s]} & \textbf{Fuerza [N]} & \textbf{Velocidad [m/s]} \\ \hline
+		-0,0611 & 0,0493 & 0,0339 & 0,0441 \\
+		-0,1427 & 0,0915 & 0,1017 & 0,1124 \\
+		-0,2242 & 0,1234 & 0,1696 & 0,1632 \\
+		-0,3057 & 0,1488 & 0,2374 & 0,2024 \\
+		-0,3872 & 0,1632 & 0,3052 & 0,2410 \\
+		-0,4687 & 0,1874 & 0,3731 & 0,2569 \\ \hline
+	\end{tabular}
+	\begin{tikzpicture}
+		\begin{axis}[
+			title={\textbf{Fuerza vs Velocidad}},
+			xlabel={Velocidad [m/s]},
+			ylabel={Fuerza [N]},
+			xmin=0, xmax=0.3,
+			ymin=-0.6, ymax=0.4,
+			xticklabel style={/pgf/number format/.cd,fixed,precision=2},
+			grid=major,
+			legend style={at={(1.05,0.5)},anchor=west,legend cell align=left}
+			]
+			\addplot[only marks, red] table [x=Ve, y=Fe] {Amort.dat};
+			\addplot [thick, dashed, red, domain=0.044:0.257] {1.2511*x};
+			\addplot[only marks, blue] table [x=Vc, y=Fc] {Amort.dat};
+			\addplot [thick, dashed, blue, domain=0.049:0.187] {-2.1856*x};
+			\legend{Extensión, $y=\num{1.2511}x\quad R^2=\num{0.9243}$, Compresión, $y=-\num{2.1856}x\quad R^2=\num{0.8939}$}
+		\end{axis}
+	\end{tikzpicture}\\[12pt]
+	\begin{tabular}{|l|c|} \hline
+		Constante de amortiguador viscoso en compresión [\unit{\newton\cdot\second/\meter}] & 2,1855 \\ \hline
+		Constante de amortiguador viscoso en extensión [\unit{\newton\cdot\second/\meter}] & 1,2512 \\ \hline
+		Constante promedio de amortiguación [\unit{\newton\cdot\second/\meter}] & 1,7184 \\ \hline
+		Relación Compresión - Extensión & 1,7467 \\ \hline
+	\end{tabular}
+\end{center}
+
+\subsection{Parte B: Vibración Libre}
+\subsubsection{Parte B.1: Determinación de la Frecuencia Natural y Momento de Inercia del Péndulo}
+\begin{center}
+	\begin{tabular}{|c|l|c|} \hline
+		1 & \parbox{12.1cm}{\vspace{2pt}Ecuación diferencial que rige el movimiento del sistema (simplificada para pequeñas oscilaciones)\vspace{1pt}} & $\displaystyle\ddot{\theta}+\frac{3g}{2L}\theta=0$ \\ \hline
+		\multirow{3}{*}{2} & Frecuencia natural del sistema (teórica) [rad/s] & 3,8298 \\ \cline{2-3}
+		& Frecuencia natural del sistema (experimental) [rad/s] & 3,9270 \\ \cline{2-3}
+		& Diferencia porcentual [\unit{\percent}] & 2,51 \\ \hline
+		\multirow{3}{*}{3} & Momento de Inercia en el pivote (teórico) [\unit{\kilo\gram\square\meter}] & 0,7117 \\ \cline{2-3}
+		& Momento de Inercia en el pivote (experimental) [\unit{\kilo\gram\square\meter}] & 0,6769 \\ \cline{2-3}
+		& Diferencia porcentual [\unit{\percent}] & 5,01 \\ \hline
+	\end{tabular}
+	\begin{tikzpicture}
+		\begin{axis}[
+			width=11.5cm,
+			title={\textbf{Comparación de Señales}},
+			xlabel={Tiempo [\unit{\second}]},
+			ylabel={Amplitud [\unit{\volt}]},
+			xmin=0, xmax=4,
+			ymin=-4, ymax=4,
+			grid=major,
+			legend style={at={(1.05,0.5)},anchor=west,legend cell align=left}
+			]
+			\addplot[blue] table {AmpvsTiempo1.dat};
+			\addplot[red, domain=0:4, smooth, samples=100] {3.9*sin(deg(3.8298*x-0.8))};
+			\legend{Experimental, Teórica}
+		\end{axis}
+	\end{tikzpicture}
+\end{center}
+
+\subsubsection{Parte B.2: Vibración Libre con Poca Amortiguación}
+\begin{center}
+	\begin{tabular}{|c|l|c|} \hline
+		\multirow{3}{*}{1} & \multicolumn{2}{c|}{Ecuación diferencial que rige el movimiento del sistema (con valores numéricos)} \\ \cline{2-3}
+		& \multicolumn{2}{c|}{\raisebox{-6pt}{$\displaystyle\ddot{\theta}+\frac{L_{amo}^2C}{I_o}\dot{\theta}+\frac{L_{res}^2k}{I_o}\theta=0$}} \\
+		& \multicolumn{2}{c|}{$\ddot{\theta}+1,74782\dot{\theta}+1421,99\theta=0$} \\ \hline
+		\multirow{3}{*}{2} & Factor de Amortiguación ($\zeta$) & 0,02317 \\ \cline{2-3}
+		& Frecuencia Natural [rad/s] & 37,7092 \\ \cline{2-3}
+		& Frecuencia Natural Amortiguada [rad/s] & 37,6991 \\ \hline
+		3 & Constante elástica del resorte helicoidal [N/m] & 3916,88 \\ \hline
+		\multirow{3}{*}{4} & Inercia equivalente del sistema (teórica) [\unit{\kilo\gram\square\meter}] & 1,70429 \\ \cline{2-3}
+		& Inercia equivalente del sistema (experimental) [\unit{\kilo\gram\square\meter}] & 1,19986 \\ \cline{2-3}
+		& Diferencia porcentual [\unit{\percent}] & 29,60 \\ \hline
+		5 & Constante del amortiguador viscoso [\unit{\newton\cdot\second/\meter}] & 8,26751 \\ \hline
+	\end{tabular}
+	
+	\begin{tikzpicture}
+		\begin{axis}[
+			width=11cm,
+			title={\textbf{Comparación de Señales}},
+			xlabel={Tiempo [\unit{\second}]},
+			ylabel={Amplitud [\unit{\volt}]},
+			xmin=0, xmax=4,
+			ymin=-2, ymax=2,
+			grid=major,
+			legend style={at={(1.05,0.5)},anchor=west,legend cell align=left}
+			]
+			\addplot[blue] table {AmpvsTiempo2.dat};
+			\addplot[red, domain=0:4, smooth, samples=200] {2*exp(-0.02317*37.7092*x)*sin(deg(37.6991*x-1.4))};
+			\legend{Experimental, Teórica}
+		\end{axis}
+	\end{tikzpicture}
+\end{center}
+
+\section{Análisis de Resultados}
+\subsection{Parte A}
+Debido a que el área es mayor a compresión (área del cilindro) y menor a extensión (área del cilindro menos el área que ocupa el eje), y sabiendo que para este caso la fuerza es proporcional al área donde se suministra presión, entonces realizando un ajuste lineal al gráfico Fuerza vs Velocidad, se determinaron los coeficientes de compresión ($C_c=\SI{2.1855}{\newton\cdot\second/\meter}$) y extensión ($C_e=\SI{1.2512}{\newton\cdot\second/\meter}$).
+
+Se puede ver en los resultados que el coeficiente de compresión es mayor que el de extensión y la relación compresión-extensión es de 1,7467. Esto se debe a las velocidades del extremo del cilindro que se encontraba en movimiento y las fuerzas de respuesta del
+amortiguador.
+
+\subsection{Parte B: Vibración Libre}
+\subsubsection{Parte B.1}
+Al realizar una comparación entre la respuesta teórica y experimental con relación a la Amplitud vs Tiempo, se puede observar que el valor experimental del periodo es \SI{1.60}{\second}, mientras que el teórico es \SI{1.64}{\second}, obteniendo así una diferencia
+porcentual de \SI{2.47}{\percent}.
+
+De esta misma manera al comparar la inercia teórica con la experimental, se puede observar que hay diferencias en la respuesta del sistema, ya que no se conoce la amplitud al inicio de la oscilación, debido a que sensor óptico solo registra cuando la barra pasa por su posición de equilibrio estático, por lo que la inercia teórica y experimental se ve afectada con un error porcentual de \SI{5.01}{\percent}.
+
+\subsubsection{Parte B.2}
+Al comparar la inercia experimental y la teórica se observa que posee un error grande de \SI{29.60}{\percent}, esto se debe a que para hallar la ecuación diferencial, las aproximaciones que se hicieron, como asumir 1/3 de la masa del resorte, los soportes, el vibrómetro y el bloque como masas puntuales, no son admitidas por ecuación diferencial.
+
+Con la data realizada de un ensayo dinámico de la respuesta libre, se construyó un gráfico del espectro de frecuencia y se pudo obtener la frecuencia natural,la inercia equivalente, la constante del resorte y la constante del amortiguador; pudiéndose destacar que la frecuencia natural y amortiguada del sistema son parecidas, debido a que el factor de amortiguación ($\zeta$) es bajo.
+
+\newpage
+\section{Conclusiones}
+\subsection{Parte A}
+\begin{itemize}
+	\setlength{\topsep}{0pt}
+	\setlength{\itemsep}{0pt}
+	\vspace{-6pt}
+	\item La respuesta del amortiguador no es lineal, sin embargo se puede suponer como si lo fuera, lo cual es fiable pudiéndose demostrar con el ajuste realizado en la gráfica Fuerza vs Velocidad, siendo $R^2=0,9243$ a extensión y $R^2=0,8939$ a compresión.
+	\item El tiempo de extensión del amortiguador es menor al tiempo de compresión debido a que la fuerza a extensión es mayor que a compresión.
+	\vspace{-6pt}
+\end{itemize}
+\subsection{Parte B: Vibración Libre}
+\subsubsection{Parte B.1}
+\begin{itemize}
+	\item Como el sistema tiene pocas oscilaciones el sistema se puede tomar como no amortiguado.
+	\item La frecuencia natural experimental y la teórica son similares con una diferencia porcentual de (\SI{2.48}{\percent}).
+	\item La inercia en el pivote experimental y la teórica tienen una diferencia porcentual de (\SI{4.89}{\percent}).
+	\vspace{-6pt}
+\end{itemize}
+\subsubsection{Parte B.2}
+\begin{itemize}
+	\item Para coeficientes de amortiguación de valor pequeño, la frecuencia de amortiguación es aproximadamente igual a la frecuencia natural ($\omega_a\approx\omega_n$).
+	\item Cuando el valor de coeficiente de amortiguación es bajo, la oscilación se disipa rápidamente por lo que el sistema vuelve a su posición de equilibrio.
+	\item La inercia equivalente experimental y la teórica, tienen una diferencia porcentual de \SI{29.60}{\percent}, esto puede deberse a un error en las mediciones de las distancias en la barra.
+	\item La gráfica del sistema teórico y experimental coinciden en su decrecimiento.
+\end{itemize}
+
+\end{document}
