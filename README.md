@@ -21,5 +21,5 @@ License
 - Class file / code: MIT
 - Article content: CC-BY-4.0
 
-Contact
+Contact:
 Rafael Henriquez — mec.r.henriquez@gmail.com
